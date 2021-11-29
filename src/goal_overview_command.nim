@@ -3,10 +3,14 @@ import std/strutils
 import std/times
 import std/strformat
 import std/sequtils
+import std/logging
 
 proc execGoalOverviewCommand*(authToken: string) =
     let user = getUser(authToken)
+    debug("user fetched: " & $user)
+
     let goals = user.goals
+    info(&"{goals.len} goals fetched")
 
     if goals.len == 0:
         echo "No goals found."

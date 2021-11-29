@@ -1,4 +1,7 @@
 import beeminder/client
+import std/logging
 
 proc execGoalCommand*(authToken: string, goalSlug: string) =
-    echo getGoal(authToken, goalSlug)
+    let goal = getGoal(authToken, goalSlug)
+    debug("goal fetched:" & $goal)
+    echo goal

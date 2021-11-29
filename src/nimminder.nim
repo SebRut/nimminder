@@ -4,13 +4,23 @@ import std/os
 import goal_overview_command
 import goal_command
 import add_datapoint_command
+import std/logging
+import std/strformat
+
+let logBaseDir = getEnv("XDG_STATE_HOME", getEnv("HOME") / ".local/state")
+let logDir = logBaseDir / "nimminder"
+let logFile = logDir / "nimminder.log"
+createDir(logDir)
+
+addHandler(newRollingFileLogger(logFile, mode=fmAppend, fmtStr="[$datetime] - $levelname: "))
+addHandler(newConsoleLogger(lvlWarn))
 
 type MissingAuthTokenDefect = object of Defect
 
 const authTokenEnv = "BEEMINDER_AUTH_TOKEN"
 
 if not existsEnv(authTokenEnv):
-    echo ""
+    error(authTokenEnv & " is missing!")
     raise (ref MissingAuthTokenDefect)(msg: authTokenEnv & " is not defined!")
 
 let authToken = getEnv(authTokenEnv)
@@ -41,6 +51,8 @@ for kind, key, val in parser.getopt():
             discard
         of cmdEnd:
             assert false
+
+debug(&"parsed {command=} with {goalSlug=} and {datapointInfo=}")
 
 case command
     of overview:
