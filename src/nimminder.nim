@@ -12,7 +12,8 @@ let logDir = logBaseDir / "nimminder"
 let logFile = logDir / "nimminder.log"
 createDir(logDir)
 
-addHandler(newRollingFileLogger(logFile, mode=fmAppend, fmtStr="[$datetime] - $levelname: "))
+addHandler(newRollingFileLogger(logFile, mode = fmAppend,
+        fmtStr = "[$datetime] - $levelname: "))
 addHandler(newConsoleLogger(lvlWarn))
 
 type MissingAuthTokenDefect = object of Defect
