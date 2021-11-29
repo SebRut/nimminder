@@ -20,9 +20,15 @@ proc execGoalOverviewCommand*(authToken: string) =
 
     for goalSlug in goals:
         let goal = getGoal(authToken, goalSlug)
-        let derailment = toParts(fromUnix(goal.losedate) - getTime())
+        let losedateDatetime = fromUnix(goal.losedate)
+        debug("losedate parsed: " & $losedateDatetime)
+        debug(&"time to derailement: {losedateDatetime - getTime()}")
+        let derailment = toParts(losedateDatetime - getTime())
+
 
         var derailmentTextParts: seq[string] = @[]
+        if derailment[Weeks] > 0:
+            derailmentTextParts.add(&"{derailment[Weeks]} weeks(s)")
         if derailment[Days] > 0:
             derailmentTextParts.add(&"{derailment[Days]} day(s)")
         if derailment[Hours] > 0:
