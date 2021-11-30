@@ -1,7 +1,7 @@
 # nimminder
 [![CI](https://github.com/SebRut/nimminder/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/SebRut/nimminder/actions/workflows/main.yml)
 
-A CLI for [beeminder written](https://beeminder.com/) in nim. Inspired by [bmndr](https://github.com/lydgate/bmndr).
+A CLI for [beeminder](https://beeminder.com/) written in nim. Inspired by [bmndr](https://github.com/lydgate/bmndr).
 
 # Configuration
 
