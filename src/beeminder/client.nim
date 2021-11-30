@@ -1,5 +1,4 @@
 import httpclient
-import std/strformat
 import std/json
 import options
 import std/strutils
@@ -31,17 +30,21 @@ type Goal = object
   datapoints: Option[seq[Datapoint]]
 
 let client = newHttpClient()
-let baseUrl = "https://www.beeminder.com/api"
+const baseUrl = "https://www.beeminder.com/api"
 
 proc getUser*(authToken: string): User =
-  let response = client.getContent(&"{baseUrl}/v1/users/me.json?auth_token={authToken}")
+  let query = {"auth_token": authToken}
+  let uri = parseUri(baseUrl) / "v1/users/me.json" ? query
+  let response = client.getContent($uri)
   let json = parseJson(response)
 
   return to(json, User)
 
 proc getGoal*(authToken: string, goalSlug: string,
     fetchDatapoints: bool = false): Goal =
-  let response = client.getContent(&"{baseUrl}/v1/users/me/goals/{goalSlug}.json?auth_token={authToken}&datapoints={fetchDatapoints}")
+  let query = {"auth_token": authToken, "datapoints": $fetchDatapoints}
+  let uri = parseUri(baseUrl) / "v1/users/me/goals" / (goalSlug & ".json") ? query
+  let response = client.getContent($uri)
   let json = parseJson(response)
 
   return to(json, Goal)
