@@ -1,0 +1,35 @@
+
+  
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache nimble
+        id: cache-nimble
+        uses: actions/cache@v1
+        with:
+          path: ~/.nimble
+          key: ${{ runner.os }}-nimble-${{ hashFiles('*.nimble') }}
+        if: runner.os != 'Windows'
+      - name: Setup Nim environment
+        uses: jiro4989/setup-nim-action@v1.1.4
+      - run: nimble build -Y
+      - run: nimble test -Y
+      - name: nimlint-github-pr-review
+        uses: reviewdog/action-nimlint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review # Change reporter.
+          src: 'src/**/*.nim'
