@@ -4,6 +4,46 @@ import std/times
 import std/strformat
 import std/sequtils
 import std/logging
+import std/terminal
+
+proc getDerailmentText(losedate: Time): string =
+    debug("losedate parsed: " & $losedate)
+    debug(&"time to derailement: {losedate - getTime()}")
+    let derailment = toParts(losedate - getTime())
+
+
+    var derailmentTextParts: seq[string] = @[]
+    if derailment[Weeks] > 0:
+        derailmentTextParts.add(&"{derailment[Weeks]} weeks(s)")
+    if derailment[Days] > 0:
+        derailmentTextParts.add(&"{derailment[Days]} day(s)")
+    if derailment[Hours] > 0:
+        derailmentTextParts.add(&"{derailment[Hours]} hour(s)")
+    if derailment[Minutes] > 0:
+        derailmentTextParts.add(&"{derailment[Minutes]} minute(s)")
+
+
+    alignString(derailmentTextParts.join(", "), 20)
+
+proc getForegroundColor(losedate: Time): ForegroundColor =
+    if losedate - getTime() < initDuration(days = 1):
+        return fgRed
+    elif losedate - getTime() < initDuration(days = 3):
+        return fgYellow
+    return fgDefault
+
+
+proc processGoal(authToken: string, maxSlugLength: int, goalSlug: string) =
+    let goal = getGoal(authToken, goalSlug)
+
+    let losedate: Time = fromUnix(goal.losedate)
+
+    let derailmentText = getDerailmentText(losedate)
+    let fmtSlug = alignString(goalSlug, maxSlugLength)
+
+    let line = &"{fmtSlug}\tderails in {derailmentText}\t{goal.fineprint}"
+
+    styledEcho getForegroundColor(losedate), line.strip()
 
 proc execGoalOverviewCommand*(authToken: string) =
     let user = getUser(authToken)
@@ -19,24 +59,4 @@ proc execGoalOverviewCommand*(authToken: string) =
     let maxSlugLength = goals.mapIt(it.len).max
 
     for goalSlug in goals:
-        let goal = getGoal(authToken, goalSlug)
-        let losedateDatetime = fromUnix(goal.losedate)
-        debug("losedate parsed: " & $losedateDatetime)
-        debug(&"time to derailement: {losedateDatetime - getTime()}")
-        let derailment = toParts(losedateDatetime - getTime())
-
-
-        var derailmentTextParts: seq[string] = @[]
-        if derailment[Weeks] > 0:
-            derailmentTextParts.add(&"{derailment[Weeks]} weeks(s)")
-        if derailment[Days] > 0:
-            derailmentTextParts.add(&"{derailment[Days]} day(s)")
-        if derailment[Hours] > 0:
-            derailmentTextParts.add(&"{derailment[Hours]} hour(s)")
-        if derailment[Minutes] > 0:
-            derailmentTextParts.add(&"{derailment[Minutes]} minute(s)")
-
-        let fmtSlug = alignString(goalSlug, maxSlugLength)
-        let derailmentText = alignString(derailmentTextParts.join(", "), 20)
-        let line = &"{fmtSlug}\tderails in {derailmentText}\t{goal.fineprint}"
-        echo line.strip()
+        processGoal(authToken, maxSlugLength, goalSlug)

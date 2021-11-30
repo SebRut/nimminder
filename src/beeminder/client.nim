@@ -27,6 +27,7 @@ type Goal = object
   title*: string
   fineprint*: string
   losedate*: int64
+  thumb_url*: string
   datapoints: Option[seq[Datapoint]]
 
 let client = newHttpClient()
