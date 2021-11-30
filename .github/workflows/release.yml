@@ -3,13 +3,13 @@ name: release
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
 
 env:
   APP_NAME: 'nimminder'
   NIM_VERSION: 'stable'
   MAINTAINER: 'SebRut'
-  RELEASE_FILES: APPNAME # uncomment when added LICENSE README.*
+  RELEASE_FILES: APPNAME LICENSE # uncomment when added README.*
 
 jobs:
   build-artifact:

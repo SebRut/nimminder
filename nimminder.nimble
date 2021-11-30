@@ -2,7 +2,7 @@
 
 version       = "0.1.0"
 author        = "Sebastian Rutofski"
-description   = "A new awesome nimble package"
+description   = "A cli for beeminder"
 license       = "MIT"
 srcDir        = "src"
 bin           = @["nimminder"]
