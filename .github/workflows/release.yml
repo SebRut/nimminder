@@ -9,7 +9,7 @@ env:
   APP_NAME: 'nimminder'
   NIM_VERSION: 'stable'
   MAINTAINER: 'SebRut'
-  RELEASE_FILES: APPNAME LICENSE # uncomment when added README.*
+  RELEASE_FILES: nimminder LICENSE # uncomment when added README.*
 
 jobs:
   build-artifact:
