@@ -5,6 +5,7 @@ import std/strformat
 import std/sequtils
 import std/logging
 import std/terminal
+import yeetout
 
 proc getDerailmentText(losedate: Time): string =
     debug("losedate parsed: " & $losedate)
@@ -43,11 +44,13 @@ proc processGoal(authToken: string, maxSlugLength: int, goalSlug: string) =
 
     let line = &"{fmtSlug}\tderails in {derailmentText}\t{goal.fineprint}"
 
-    styledEcho getForegroundColor(losedate), line.strip()
+    yeet("goal fetched", @[strArg("goalSlug", goalSlug)])
+    #styledEcho getForegroundColor(losedate), line.strip()
 
 proc execGoalOverviewCommand*(authToken: string) =
     let user = getUser(authToken)
     debug("user fetched: " & $user)
+    yeet("user fetched", @[strArg("username", user.username), arrArg("goals", user.goals)], yLvlDebug)
 
     let goals = user.goals
     info(&"{goals.len} goals fetched")

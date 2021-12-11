@@ -1,7 +1,6 @@
 import beeminder/client
-import std/logging
+import yeetout
 
 proc execGoalCommand*(authToken: string, goalSlug: string) =
     let goal = getGoal(authToken, goalSlug)
-    debug("goal fetched:" & $goal)
-    echo goal
+    yeet("goal fetched", @[strArg("goalSlug",goalSlug)])

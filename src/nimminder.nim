@@ -6,6 +6,10 @@ import goal_command
 import add_datapoint_command
 import std/logging
 import std/strformat
+import yeetout
+
+yeeter = NoOpYeeter()
+
 
 let logBaseDir = getEnv("XDG_STATE_HOME", getEnv("HOME") / ".local/state")
 let logDir = logBaseDir / "nimminder"
@@ -27,7 +31,7 @@ if not existsEnv(authTokenEnv):
 let authToken = getEnv(authTokenEnv)
 
 
-var parser = initOptParser()
+var parser = initOptParser(longNoVal = @["json"])
 
 type
     Command = enum
@@ -49,7 +53,9 @@ for kind, key, val in parser.getopt():
                 command = Command.createDatapoint
                 datapointInfo = datapointInfo.strip() & " " & key
         of cmdShortOption, cmdLongOption:
-            discard
+            case key
+            of "json":
+                yeeter = JsonYeeter()
         of cmdEnd:
             assert false
 

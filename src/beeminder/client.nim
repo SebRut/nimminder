@@ -6,7 +6,7 @@ import std/algorithm
 import std/uri
 
 type User = object
-  username: string
+  username*: string
   timezone: string
   updated_at: int64
   goals*: seq[string]
