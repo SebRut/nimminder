@@ -68,9 +68,6 @@ proc parseDatapointString*(input: string): Datapoint {.raises: [DatapointParsing
   
   let parts = input.split(' ')
 
-  if parts.len < 2:
-    raise DatapointParsingError.newException("provided input contains less than 2 arguments!")
-
   var date: string
   var value: string
   var comment: string
