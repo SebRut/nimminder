@@ -42,9 +42,8 @@ proc processGoal(authToken: string, maxSlugLength: int, goalSlug: string) =
     let derailmentText = getDerailmentText(losedate)
     let fmtSlug = alignString(goalSlug, maxSlugLength)
 
-    let line = &"{fmtSlug}\tderails in {derailmentText}\t{goal.fineprint}"
-
     if prettyOutput:
+        let line = &"{fmtSlug}\tderails in {derailmentText}\t{goal.fineprint}"
         styledEcho getForegroundColor(losedate), line.strip()
     else:
         yeet("goal fetched", @[strArg("goalSlug", goalSlug)])

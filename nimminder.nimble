@@ -14,3 +14,4 @@ task test, "Runs the test suite":
 # Dependencies
 
 requires "nim >= 1.4.8"
+requires "https://github.com/SebRut/yeetout.git"
