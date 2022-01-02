@@ -7,6 +7,7 @@ import add_datapoint_command
 import std/logging
 import std/strformat
 import yeetout
+import config
 
 yeeter = NoOpYeeter()
 
@@ -18,7 +19,6 @@ createDir(logDir)
 
 addHandler(newRollingFileLogger(logFile, mode = fmAppend,
         fmtStr = "[$datetime] - $levelname: "))
-addHandler(newConsoleLogger(lvlWarn))
 
 type MissingAuthTokenDefect = object of Defect
 
@@ -56,6 +56,7 @@ for kind, key, val in parser.getopt():
             case key
             of "json":
                 yeeter = JsonYeeter()
+                prettyOutput = false
         of cmdEnd:
             assert false
 

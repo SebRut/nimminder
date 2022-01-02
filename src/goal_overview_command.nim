@@ -6,6 +6,7 @@ import std/sequtils
 import std/logging
 import std/terminal
 import yeetout
+import config
 
 proc getDerailmentText(losedate: Time): string =
     debug("losedate parsed: " & $losedate)
@@ -22,7 +23,6 @@ proc getDerailmentText(losedate: Time): string =
         derailmentTextParts.add(&"{derailment[Hours]} hour(s)")
     if derailment[Minutes] > 0:
         derailmentTextParts.add(&"{derailment[Minutes]} minute(s)")
-
 
     alignString(derailmentTextParts.join(", "), 20)
 
@@ -44,8 +44,10 @@ proc processGoal(authToken: string, maxSlugLength: int, goalSlug: string) =
 
     let line = &"{fmtSlug}\tderails in {derailmentText}\t{goal.fineprint}"
 
-    yeet("goal fetched", @[strArg("goalSlug", goalSlug)])
-    #styledEcho getForegroundColor(losedate), line.strip()
+    if prettyOutput:
+        styledEcho getForegroundColor(losedate), line.strip()
+    else:
+        yeet("goal fetched", @[strArg("goalSlug", goalSlug)])
 
 proc execGoalOverviewCommand*(authToken: string) =
     let user = getUser(authToken)

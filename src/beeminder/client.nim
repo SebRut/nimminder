@@ -13,7 +13,7 @@ type User = object
   urgency_load: int
 
 type Datapoint* = object
-  id: string
+  id*: string
   timestamp: int64
   daystamp*: string
   value*: float
