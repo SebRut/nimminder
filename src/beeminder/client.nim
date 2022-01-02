@@ -60,8 +60,16 @@ proc createDatapoint*(authToken: string, goalSlug: string,
 
   return to(json, Datapoint)
 
-proc parseDatapointString*(input: string): Datapoint =
+type DatapointParsingError* = object of CatchableError
+
+proc parseDatapointString*(input: string): Datapoint {.raises: [DatapointParsingError].} =
+  if input.len < 1:
+    raise DatapointParsingError.newException("empty input passed!")
+  
   let parts = input.split(' ')
+
+  if parts.len < 2:
+    raise DatapointParsingError.newException("provided input contains less than 2 arguments!")
 
   var date: string
   var value: string
@@ -70,6 +78,8 @@ proc parseDatapointString*(input: string): Datapoint =
   var inCommentMode = false
 
   for part in parts.reversed:
+    if part.len == 0:
+      raise DatapointParsingError.newException("argument with len=0 passed!")
     if part[part.len-1] == '"':
       inCommentMode = true
       comment = part.substr(0, part.len-2)
@@ -86,5 +96,10 @@ proc parseDatapointString*(input: string): Datapoint =
     else:
       date = part & date
 
-  return Datapoint(daystamp: date, value: parseFloat(value),
-      comment: comment.strip())
+  var valueFloat: float
+  try:
+    valueFloat = parseFloat(value)
+  except ValueError as e:
+    raise DatapointParsingError.newException("parsing value string failed!", e)
+
+  return Datapoint(daystamp: date, value: valueFloat, comment: comment.strip())
